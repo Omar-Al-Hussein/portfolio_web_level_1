@@ -1,7 +1,7 @@
 // Initialize EmailJS
 document.addEventListener('DOMContentLoaded', function() {
     // Replace with your EmailJS public key
-    emailjs.init("YOUR_PUBLIC_KEY");
+    emailjs.init("P7KcpBoD7_wqEee28");q
 });
 
 // Skills Data
