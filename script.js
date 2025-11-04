@@ -229,36 +229,55 @@ function displayProjects() {
     });
 }
 
-// Contact form handling
+// Contact form handling (EmailJS)
 function handleFormSubmit(e) {
     e.preventDefault();
-    
+
     const submitBtn = this.querySelector('button[type="submit"]');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const btnLoading = submitBtn.querySelector('.btn-loading');
+
     const formData = {
         name: document.getElementById('full-name').value,
         email: document.getElementById('email').value,
         message: document.getElementById('message').value
     };
-    
-    // Simple validation
+
+    // Validate input
     if (!formData.name || !formData.email || !formData.message) {
         showNotification('Please fill in all required fields.', 'error');
         return;
     }
-    
+
     // Show loading state
-    submitBtn.classList.add('loading');
+    btnText.classList.add('hidden');
+    btnLoading.classList.remove('hidden');
     submitBtn.disabled = true;
-    
-    // Simulate form submission
-    setTimeout(() => {
-        showNotification('Thank you! Your message has been sent successfully. I will respond within 24 hours.', 'success');
+
+    // Send the email
+    emailjs.init("P7KcpBoD7_wqEee28");
+    emailjs.send("service_7m7m5ym", "template_lbgqamb", {
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message
+    })
+    .then(() => {
+        showNotification('✅ Message sent successfully! I’ll get back to you soon.', 'success');
         contactForm.reset();
-        updateCharacterCounter(); // Reset counter
-        submitBtn.classList.remove('loading');
+        updateCharacterCounter();
+    })
+    .catch((error) => {
+        console.error("EmailJS Error:", error);
+        showNotification('⚠️ Failed to send message. Please try again later.', 'error');
+    })
+    .finally(() => {
+        btnText.classList.remove('hidden');
+        btnLoading.classList.add('hidden');
         submitBtn.disabled = false;
-    }, 2000);
+    });
 }
+
+
 
 // Character counter for message textarea
 function updateCharacterCounter() {
